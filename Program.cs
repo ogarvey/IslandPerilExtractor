@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
 
 var ipwFile = args[0];
@@ -81,16 +82,17 @@ static void ParseImages(string picDir)
     var unk3 = picReader.ReadUInt16(); // unknown
     var picData = picReader.ReadBytes(width * height); // read the image data
     var image = ImageUtils.GenerateClutImageSharp(palette, picData, width, height); // generate the image from the sprite data
-                                                                                    // rotaste the image 90 degrees clockwise, and then flip it horizontally
+    var pngEncoder = new PngEncoder() { ColorType = PngColorType.Palette }; // create a png encoder with palette color type
+                                   // rotaste the image 90 degrees clockwise, and then flip it horizontally
     image.Mutate(x => x.Rotate(90).Flip(FlipMode.Horizontal)); // rotate the image 90 degrees clockwise and flip it horizontally
     var outputFile = Path.Combine(picOutputDir, $"{Path.GetFileNameWithoutExtension(picFile)}_{unk2}_{unk1}_{unk3}.png"); // output file name
     // save the image to a file
-    image.SaveAsPng(outputFile); // save the image as a png file
-                                 // now save the image with transparency
+    image.SaveAsPng(outputFile, pngEncoder); // save the image as a png file
+    // now save the image with transparency
     var transparentImage = ImageUtils.GenerateClutImageSharp(palette, picData, width, height, true); // generate the image from the sprite data with transparency
     outputFile = Path.Combine(transparentDir, $"{Path.GetFileNameWithoutExtension(picFile)}_{unk2}_{unk1}_{unk3}_transparent.png"); // output file name
     transparentImage.Mutate(x => x.Rotate(90).Flip(FlipMode.Horizontal)); // rotate the image 90 degrees clockwise and flip it horizontally
-    transparentImage.SaveAsPng(outputFile); // save the image as a png file
+    transparentImage.SaveAsPng(outputFile, pngEncoder); // save the image as a png file
   });
   Console.WriteLine();
   Console.WriteLine($"Processed {picFiles.Length} files.");
