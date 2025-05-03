@@ -17,7 +17,7 @@ IslandPerilExtractor is a tool designed to extract and process resources from `.
 ## Usage
 
 1. Build the project using .NET 9.0 or later.
-2. Either drop the `.ipw file onto the exe, or run the application with the following command:
+2. Either drop the `.ipw` file onto the exe, or run the application with the following command:
 
    ```bash
    IslandPerilExtractor <ipw file> 
